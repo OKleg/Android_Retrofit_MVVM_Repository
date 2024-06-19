@@ -7,9 +7,10 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
-import androidx.lifecycle.ViewModelProvider
+import androidx.lifecycle.viewModelScope
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import kotlinx.coroutines.launch
 import mmcs.okleg.retrofit.databinding.FragmentHomeBinding
 import mmcs.okleg.retrofit.ui.home.adapter.MyAdapter
 
@@ -19,7 +20,7 @@ class HomeFragment : Fragment() {
     private lateinit var myAdapter: RecyclerView.Adapter<*>
 
     private var _binding: FragmentHomeBinding? = null
-    private val viewModel : HomeViewModel by viewModels { MyViewModelFactory(requireContext()) }
+    private val viewModel : HomeViewModel by viewModels { HomeViewModelFactory(requireContext()) }
 
     //TODO
 
@@ -30,31 +31,31 @@ class HomeFragment : Fragment() {
         super.onCreate(savedInstanceState)
         manager = LinearLayoutManager(context)
         viewModel.getCharacters()
+
     }
+
     @SuppressLint("NotifyDataSetChanged")
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
-        val homeViewModel =
-            ViewModelProvider(this).get(HomeViewModel::class.java)
-
         _binding = FragmentHomeBinding.inflate(inflater, container, false)
-        val root: View = binding.root
-        recyclerView =
-            binding.recyclerView.apply {
-                myAdapter = MyAdapter(viewModel.list)
-                layoutManager = manager
-                adapter = myAdapter
-            }
-        //Internet begin
-        viewModel.list.observe(viewLifecycleOwner){
-            myAdapter.notifyDataSetChanged()
+        viewModel.viewModelScope.launch {
+            recyclerView =
+                binding.recyclerView.apply {
+                    myAdapter = MyAdapter(viewModel.list)
+                    layoutManager = manager
+                    adapter = myAdapter
+                }
         }
 
-
-
+        //Internet begin
+        viewModel.viewModelScope.launch {
+            viewModel.list.observe(viewLifecycleOwner) {
+                myAdapter.notifyDataSetChanged()
+            }
+        }
 //        recyclerView =
 //            binding.recyclerView.apply {
 //                myAdapter = MyAdapter(viewModel.list.value!!)
@@ -94,7 +95,7 @@ class HomeFragment : Fragment() {
         //Internet end
 //        homeViewModel.text.observe(viewLifecycleOwner) {
 //        }
-        return root
+        return binding.root
     }
 
     override fun onDestroyView() {

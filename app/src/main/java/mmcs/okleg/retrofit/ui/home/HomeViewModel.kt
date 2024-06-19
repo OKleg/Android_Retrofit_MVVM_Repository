@@ -9,12 +9,9 @@ import kotlinx.coroutines.launch
 import mmcs.okleg.retrofit.model.character.Character
 import mmcs.okleg.retrofit.repository.CharacterRepository
 
+
 class HomeViewModel(private val repository: CharacterRepository) : ViewModel() {
 
-    private val _text = MutableLiveData<String>().apply {
-        value = "This is home Fragment"
-    }
-    val text: MutableLiveData<String> = _text
 
     private val _list = MutableLiveData<List<Character>>().apply {
         value = emptyList()
@@ -29,10 +26,10 @@ class HomeViewModel(private val repository: CharacterRepository) : ViewModel() {
 
 }
 
-class MyViewModelFactory(context: Context) : ViewModelProvider.Factory {
+@Suppress("UNCHECKED_CAST")
+class HomeViewModelFactory(context: Context) : ViewModelProvider.Factory {
     override fun <T : ViewModel> create(modelClass: Class<T>): T {
-            @Suppress("UNCHECKED_CAST")
-            val repository = CharacterRepository()
+            val repository = CharacterRepository.getInstance()
             return HomeViewModel(repository) as T
     }
 }
