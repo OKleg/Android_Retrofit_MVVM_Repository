@@ -24,6 +24,7 @@ class DetailsFragment : Fragment() {
     ): View {
         val dashboardViewModel =
             ViewModelProvider(this).get(DetailsViewModel::class.java)
+        val id = arguments?.getLong("id",112)!!
 
         _binding = FragmentDetailsBinding.inflate(inflater, container, false)
         val root: View = binding.root

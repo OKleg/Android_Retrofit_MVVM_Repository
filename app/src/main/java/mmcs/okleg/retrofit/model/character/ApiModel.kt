@@ -1,4 +1,4 @@
-package mmcs.okleg.retrofit.model
+package mmcs.okleg.retrofit.model.character
 
 data class ApiModel (
     var data: List<Character>

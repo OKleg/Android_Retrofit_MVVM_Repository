@@ -1,11 +1,15 @@
 package mmcs.okleg.retrofit.ui.home
 
+import android.content.Context
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
-import mmcs.okleg.retrofit.model.ApiModel
-import mmcs.okleg.retrofit.model.Character
+import androidx.lifecycle.ViewModelProvider
+import androidx.lifecycle.viewModelScope
+import kotlinx.coroutines.launch
+import mmcs.okleg.retrofit.model.character.Character
+import mmcs.okleg.retrofit.repository.CharacterRepository
 
-class HomeViewModel : ViewModel() {
+class HomeViewModel(private val repository: CharacterRepository) : ViewModel() {
 
     private val _text = MutableLiveData<String>().apply {
         value = "This is home Fragment"
@@ -16,4 +20,33 @@ class HomeViewModel : ViewModel() {
         value = emptyList()
     }
     val list: MutableLiveData<List<Character>> = _list
+
+      fun getCharacters(){
+        viewModelScope.launch {
+            repository.getCharacters(list)
+        }
+    }
+
 }
+
+class MyViewModelFactory(context: Context) : ViewModelProvider.Factory {
+    override fun <T : ViewModel> create(modelClass: Class<T>): T {
+            @Suppress("UNCHECKED_CAST")
+            val repository = CharacterRepository()
+            return HomeViewModel(repository) as T
+    }
+}
+
+//class NoteViewModelFactory( private val repository: CharacterRepository) : ViewModelProvider.Factory {
+//    override fun <T : ViewModel> create(modelClass: Class<T>): T {
+//        return HomeViewModel( repository) as T
+//    }
+//}
+//companion object {
+//    val Factory: ViewModelProvider.Factory = viewModelFactory {
+//        initializer {
+//            val characterRepository = CharacterRepository
+//            HomeViewModel(CharacterRepository = marsPhotosRepository)
+//        }
+//    }
+//}
