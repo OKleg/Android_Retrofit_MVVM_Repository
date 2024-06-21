@@ -1,6 +1,6 @@
 package mmcs.okleg.retrofit.data.api
 
-import mmcs.okleg.retrofit.model.character.ApiModel
+import mmcs.okleg.retrofit.model.character.CharacterApiModel
 import retrofit2.Call
 import retrofit2.http.GET
 
@@ -11,5 +11,6 @@ interface ApiService {
 //    @GET("posts")
 //    fun getPosts(): Call<List<ApiModel>>
     @GET("character")
-    fun getCharacters(): Call<ApiModel>
+    fun getCharacters(): Call<CharacterApiModel>
+
 }

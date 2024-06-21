@@ -20,9 +20,9 @@ class DetailsViewModel(private val repository: CharacterRepository) : ViewModel(
 }
 
 @Suppress("UNCHECKED_CAST")
-class DetailsViewModelFactory(context: Context) : ViewModelProvider.Factory {
+class DetailsViewModelFactory(val context: Context) : ViewModelProvider.Factory {
     override fun <T : ViewModel> create(modelClass: Class<T>): T {
-        val repository = CharacterRepository.getInstance()
+        val repository = CharacterRepository.getInstance(context)
         return DetailsViewModel(repository) as T
     }
 }

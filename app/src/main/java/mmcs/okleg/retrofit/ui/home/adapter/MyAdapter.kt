@@ -6,6 +6,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.TextView
+import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.navigation.findNavController
 import androidx.recyclerview.widget.RecyclerView
@@ -34,20 +35,22 @@ class MyAdapter(private val data: MutableLiveData<List<Character>>) : RecyclerVi
         val v = LayoutInflater.from(parent.context).inflate(R.layout.fragment_list_item, parent, false)
         val holder = MyViewHolder(v)
         holder.itemView.setOnClickListener {
-            var id = data.value!![holder.bindingAdapterPosition]._id
+            val id = data.value!![holder.bindingAdapterPosition]._id
             val args = Bundle()
-            args.putLong("id",id)
+            if (id != null)
+                args.putLong("id",id)
             it.findNavController().navigate(R.id.navigation_details,args)
         }
         return holder
     }
 
     override fun getItemCount(): Int {
-        return data.value!!.size
+        return if (data.value !=null)  data.value!!.size
+        else 0
     }
 
     override fun onBindViewHolder(holder: MyViewHolder, position: Int) {
-        holder.bind(data.value!![position])
+        holder.bind(data.value!![position] )
     }
 
 
